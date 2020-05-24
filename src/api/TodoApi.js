@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import {JPA_API_URL} from '../api/Constants';
+import {JPA_API_URL,REGISTER_URL} from '../api/Constants';
 
 class TodoApi{
 
@@ -34,6 +34,10 @@ class TodoApi{
 
     addNewTodo(userName, todo){
         return axios.post(`${JPA_API_URL}${userName}/add`,todo);
+    }
+
+    register(user){
+        return axios.post(`${REGISTER_URL}users/register`,user);
     }
 
 }

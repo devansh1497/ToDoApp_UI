@@ -9,6 +9,7 @@ import Footer from './Footer';
 import Logout from './Logout';
 import AuthenticatedRoute from './AuthenticatedRoute';
 import UpdateTodo from './UpdateTodo';
+import Register from './Register';
 
 class TodoApp extends Component {
     state = {  }
@@ -38,6 +39,7 @@ class TodoApp extends Component {
         <Switch>
             <Route path="/" exact component={Login}/>
             <Route path="/login" component={Login}/>
+            <Route path="/register" component={Register}></Route>
             <AuthenticatedRoute exact path="/welcome/:name" component={Welcome}/>
             <AuthenticatedRoute exact path="/todos/:name/:id/update" component={UpdateTodo}/>
             <AuthenticatedRoute path="/todos/:name" component={ListTodos}/>
@@ -45,7 +47,7 @@ class TodoApp extends Component {
             
             <Route component={ErrorPage}/>
         </Switch>
-        <Footer/>
+        {/* <Footer/> */}
     </>
 </Router>
 {/*<LoginComponent/>

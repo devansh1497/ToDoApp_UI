@@ -6,8 +6,8 @@ class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            username : "ranga",
-            password : "password@1234",
+            username : "devansh",
+            password : "password",
             valid : true
         }
     }
@@ -16,6 +16,7 @@ class Login extends React.Component {
        
         AuthenticationService.executeJwtAuthenticationService(this.state.username, this.state.password)
         .then((response) => {
+            console.log('aooafokf')
             AuthenticationService.registerSuccessfulLoginForJwt(this.state.username,response.data.token);
             this.props.history.push(`/todos/${this.state.username}`);
         })

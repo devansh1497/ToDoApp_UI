@@ -11,11 +11,16 @@ class AuthenticationService{
         });
     }
 
-    executeJwtAuthenticationService(userName, password){
-        return axios.post('http://localhost:8080/authenticate', {
-                username : userName,
+    async executeJwtAuthenticationService(userName, password){
+        try {
+            return axios.post('http://localhost:8080/authenticate', {
+                username: userName,
                 password
-        }).catch(()=>this.props.history.push("/login"))
+            });
+        }
+        catch (e) {
+            return this.props.history.push("/login");
+        }
     }
 
     createBasicAuthToken(userName, password){
@@ -34,7 +39,8 @@ class AuthenticationService{
     }
 
     registerSuccessfulLoginForJwt(userName, token){
-        sessionStorage.setItem("authenticatedUser",userName);
+        sessionStorage.setItem("authenticatedUser",userName); 
+        console.log('register sucessful',userName,token);
         this.setUpAxiosInterceptor(this.createJwtToken(token));
     }
 
@@ -55,11 +61,13 @@ class AuthenticationService{
     }
 
     setUpAxiosInterceptor(basicAuthHeader){
+        console.log('-->',this.isUserLoggedIn())
         axios.interceptors.request.use(
             (config) => {
                 if(this.isUserLoggedIn()){
                     config.headers.authorization = basicAuthHeader;
                 }
+                console.log(config)
                 return config; 
             }
         )
