@@ -40,7 +40,6 @@ class AuthenticationService{
 
     registerSuccessfulLoginForJwt(userName, token){
         sessionStorage.setItem("authenticatedUser",userName); 
-        console.log('register sucessful',userName,token);
         this.setUpAxiosInterceptor(this.createJwtToken(token));
     }
 
@@ -61,13 +60,11 @@ class AuthenticationService{
     }
 
     setUpAxiosInterceptor(basicAuthHeader){
-        console.log('-->',this.isUserLoggedIn())
         axios.interceptors.request.use(
             (config) => {
                 if(this.isUserLoggedIn()){
                     config.headers.authorization = basicAuthHeader;
                 }
-                console.log(config)
                 return config; 
             }
         )

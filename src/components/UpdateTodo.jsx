@@ -17,7 +17,6 @@ class UpdateTodo extends Component {
 
     componentDidMount(){
         const userName = AuthenticationService.findUserName();
-        console.log(this.state.id ==-1)
         if(this.state.id == -1) return;
         TodoApi.getUpdateById(userName,this.state.id)
         .then(response => {

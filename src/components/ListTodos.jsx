@@ -4,17 +4,26 @@ import TodoApi from '../api/TodoApi.js';
 import AuthenticationService from '../AuthenticationService.js';
 import '../App.css';
 import moment from 'moment';
+import PopUp from './Popup.jsx';
 
 class ListTodos extends Component {
     state = { 
         todo: [],   
-        deleteStatus: null
+        deleteStatus: null,
+        showDeleteModal : false,
+        deleteId : null
      };
 
 
     componentDidMount(){
         
         this.refreshTodoList(AuthenticationService.findUserName());
+    }
+
+    toggleDeleteModal = () => {
+        this.setState({
+            showDeleteModal : !this.state.showDeleteModal
+        })
     }
 
     refreshTodoList(userName){
@@ -27,12 +36,27 @@ class ListTodos extends Component {
         .catch(error => console.log('error->',error.message));
     }
 
+    handleDeleteButton = (id) => {
+        this.setState({
+            showDeleteModal : true,
+            deleteId : id
+        })
+    }
+
+    resetDeleteId = () => {
+        this.setState({
+            deleteId : null
+        })
+    }
+
     handleDelete = (id)=>{
         const userName = AuthenticationService.findUserName();
+        console.log('resey delete id')
         TodoApi.deleteTodoById(userName,id)
         .then(resp => this.refreshTodoList(userName))
         .then(resp =>this.setState({
-            deleteStatus : true
+            deleteStatus : true,
+            deleteId : null
         }))
         .catch(error =>this.setState({
             deleteStatus: false
@@ -72,11 +96,12 @@ class ListTodos extends Component {
                                 <td>{t.status ? "Yes" : "No"}</td>
                                 <td>{moment(t.targetDate).format("DD-MM-YYYY")}</td>
                                 <td><button className="btn btn-success" onClick={() =>this.handleUpdate(t.id)}>Update</button></td>
-                                <td><button className="btn btn-warning" onClick={()=>this.handleDelete(t.id)}>Delete</button></td>
+                                <td><button className="btn btn-warning" onClick={()=>this.handleDeleteButton(t.id)}>Delete</button></td>
                             </tr>
                         )}
                         </tbody>
                     </table>
+                    {this.state.showDeleteModal && this.state.deleteId && <PopUp resetDeleteId={this.resetDeleteId} deleteId={this.state.deleteId} handleDelete={this.handleDelete} toggleDeleteModal={this.toggleDeleteModal}/>}
                 </div>
                 <button className="btn btn-success" onClick={()=>this.handleUpdate(-1)}>Add</button>
             </div>
