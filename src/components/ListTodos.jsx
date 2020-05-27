@@ -5,6 +5,9 @@ import AuthenticationService from '../AuthenticationService.js';
 import '../App.css';
 import moment from 'moment';
 import PopUp from './Popup.jsx';
+import loadTodos from '../api/actions/TodosAction';
+import {connect} from 'react-redux';
+import '../styling/ListTodos.scss';
 
 class ListTodos extends Component {
     state = { 
@@ -17,7 +20,9 @@ class ListTodos extends Component {
 
     componentDidMount(){
         
-        this.refreshTodoList(AuthenticationService.findUserName());
+        // this.refreshTodoList(AuthenticationService.findUserName());
+        console.log(this.props)
+        this.props.dispatch(loadTodos(AuthenticationService.findUserName()));
     }
 
     toggleDeleteModal = () => {
@@ -75,6 +80,7 @@ class ListTodos extends Component {
     }
 
     render() { 
+        const {todos} = this.props;
         return ( 
             <div>
                 <h1>ToDo items...</h1>
@@ -90,7 +96,9 @@ class ListTodos extends Component {
                         {this.state.deleteStatus && <div className="alert alert-success delete-status">Deleted</div>}
                         {this.state.deleteStatus !== null && !this.state.deleteStatus && <div className="alert alert-success delete-status">An error occurred.</div>}
                         <tbody>
-                        {this.state.todo.map(t =>
+                        {todos.isFetching && <label>Loading...</label>}
+                        {todos.isError && <label className="error-text">Service is down. Please try again later.</label>}
+                        {!todos.isFetching && !todos.isError && todos.todos.map(t =>
                             <tr key={t.id}>
                                 <td>{t.description}</td>
                                 <td>{t.status ? "Yes" : "No"}</td>
@@ -107,6 +115,10 @@ class ListTodos extends Component {
             </div>
          );
     }
+
 }
- 
-export default ListTodos;
+
+function mapStateToProps(state){
+    return {todos : state.todos}
+}
+export default connect(mapStateToProps)(ListTodos);
