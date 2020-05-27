@@ -8,6 +8,7 @@ import PopUp from './Popup.jsx';
 import loadTodos from '../api/actions/TodosAction';
 import {connect} from 'react-redux';
 import '../styling/ListTodos.scss';
+import Loader from './Loader';
 
 class ListTodos extends Component {
     state = { 
@@ -32,13 +33,7 @@ class ListTodos extends Component {
     }
 
     refreshTodoList(userName){
-        TodoApi.findTodoList(userName)
-        .then(response => {
-            this.setState({
-                todo : response.data
-            })
-        })
-        .catch(error => console.log('error->',error.message));
+        this.props.dispatch(loadTodos(AuthenticationService.findUserName()));
     }
 
     handleDeleteButton = (id) => {
@@ -94,9 +89,9 @@ class ListTodos extends Component {
                             </tr>
                         </thead>
                         {this.state.deleteStatus && <div className="alert alert-success delete-status">Deleted</div>}
-                        {this.state.deleteStatus !== null && !this.state.deleteStatus && <div className="alert alert-success delete-status">An error occurred.</div>}
+                        {this.state.deleteStatus !== null && !this.state.deleteStatus && <div className="alert alert-danger delete-status">An error occurred.</div>}
                         <tbody>
-                        {todos.isFetching && <label>Loading...</label>}
+                        {todos.isFetching && <Loader/>}
                         {todos.isError && <label className="error-text">Service is down. Please try again later.</label>}
                         {!todos.isFetching && !todos.isError && todos.todos.map(t =>
                             <tr key={t.id}>

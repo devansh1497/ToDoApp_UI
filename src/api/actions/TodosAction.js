@@ -36,7 +36,7 @@ function todosFailure(){
 
 export default function loadTodos(userName){
     return dispatch => {
-        dispatch(todosRequest);
+        dispatch(todosRequest());
         const url = `${JPA_API_URL}${userName}`;
         axios.get(url)
         .then(resp => {
